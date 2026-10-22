@@ -1,0 +1,14 @@
+import ExcelJS from 'exceljs';import{onlyMethod,json,isAdmin,db,dateCR}from'../../lib/server.js';import{QUESTIONS}from'../../lib/questions.js';
+export default async function handler(req,res){if(!onlyMethod(req,res,'GET'))return;if(!isAdmin(req))return json(res,401,{error:'No autorizado'});
+ try{const sql=db();const rows=await sql`SELECT id,full_name,email,correct_count,score,passed,submitted_at,answers FROM submissions ORDER BY submitted_at DESC`;
+ const book=new ExcelJS.Workbook();book.creator='GENIA 2026';book.created=new Date();
+ const sheet=book.addWorksheet('Resultados',{views:[{state:'frozen',ySplit:4}]});
+ sheet.mergeCells('A1:Q1');sheet.getCell('A1').value='GENIA 2026  |  Evaluación de nivelación 01';sheet.getCell('A1').font={bold:true,size:16,color:{argb:'FFFFFFFF'}};sheet.getCell('A1').fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF10142F'}};sheet.getRow(1).height=32;
+ sheet.mergeCells('A2:Q2');sheet.getCell('A2').value='Registro de evaluaciones · Zona horaria: Costa Rica · Aprobación: 80/100';sheet.getCell('A2').font={italic:true,color:{argb:'FF777F92'}};
+ const columns=['ID','Nombre completo','Correo electrónico','Fecha y hora (Costa Rica)','Aciertos','Nota / 100','Estado',...QUESTIONS.map(q=>`P${q.id}`)];
+ sheet.getRow(4).values=columns;sheet.getRow(4).height=28;sheet.getRow(4).eachCell(c=>{c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF759CE0'}};c.font={bold:true,color:{argb:'FFFFFFFF'}};c.alignment={vertical:'middle'};});
+ rows.forEach((r,i)=>{const a=typeof r.answers==='string'?JSON.parse(r.answers):r.answers;const row=sheet.addRow([r.id,r.full_name,r.email,dateCR(r.submitted_at),r.correct_count,r.score,r.passed?'APROBADO':'NO APROBADO',...QUESTIONS.map(q=>a[q.id]===q.correct?'Correcta':'Incorrecta')]); if(i%2===0)row.eachCell(c=>{c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF1F5FB'}};});row.getCell(6).font={bold:true,color:{argb:r.passed?'FF16824B':'FFB44747'}};});
+ sheet.columns.forEach((c,i)=>{c.width=[10,31,34,28,12,14,18][i]||14;});sheet.autoFilter={from:'A4',to:'Q4'};
+ const detail=book.addWorksheet('Clave y preguntas');detail.columns=[{header:'N°',key:'num',width:9},{header:'Tema',key:'category',width:26},{header:'Pregunta',key:'question',width:95},{header:'Respuesta correcta',key:'correct',width:75}];QUESTIONS.forEach(q=>detail.addRow({num:q.id,category:q.category,question:q.question,correct:q.options[q.correct]}));detail.getRow(1).font={bold:true,color:{argb:'FFFFFFFF'}};detail.getRow(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF10142F'}};
+ const buffer=await book.xlsx.writeBuffer();res.status(200).setHeader('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet').setHeader('Content-Disposition','attachment; filename="GENIA_2026_resultados.xlsx"').setHeader('Cache-Control','no-store').send(Buffer.from(buffer));
+ }catch(e){console.error('export',e.message);return json(res,500,{error:'No se pudo generar el archivo Excel.'});}}
