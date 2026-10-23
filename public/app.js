@@ -1,3 +1,5 @@
+import {resultScore} from './result-score.js';
+
 (() => {
   'use strict';
   const KEY = 'genia2026_participacion_v3';
@@ -142,7 +144,7 @@
   const statusText = {correct:'Correcta',partial:'Parcialmente acertada',incorrect:'Para revisar',unanswered:'Sin responder'};
   function showResult(){
     const result=state.result;if(!result)return;
-    $('nota').textContent=result.score;
+    $('nota').textContent=resultScore(result);
     $('completedMessage').textContent='Registrado el '+result.completedAt+' (hora de Costa Rica).';
     const partial=result.details.filter(d=>status(d)==='partial').length;
     const other=result.details.filter(d=>['incorrect','unanswered'].includes(status(d))).length;
@@ -173,7 +175,7 @@
     const list=$('rlist');list.replaceChildren();
     const filtered=result.details.map((d,i)=>({...d,num:i+1})).filter(d=>state.filter==='all'||(state.filter==='ok'?d.isPerfect:!d.isPerfect));
     const partial=result.details.filter(d=>status(d)==='partial').length;
-    $('sum').textContent=`${result.correct} de 10 respuestas completamente correctas${partial?`, ${partial} parcialmente acertada${partial===1?'':'s'}`:''}. Cada pregunta suma un punto solo si está completamente correcta; los aciertos parciales sirven para orientar el repaso.`;
+    $('sum').textContent=`${resultScore(result)} de 10 respuestas completamente correctas${partial?`, ${partial} parcialmente acertada${partial===1?'':'s'}`:''}. Cada pregunta suma un punto solo si está completamente correcta; los aciertos parciales sirven para orientar el repaso.`;
     document.querySelectorAll('[data-rf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rf===state.filter)));
     if(!filtered.length){put(list,make('li','ri','No hay preguntas en esta categoría.'));return;}
     filtered.forEach(d=>{
