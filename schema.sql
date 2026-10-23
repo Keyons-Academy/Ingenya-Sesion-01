@@ -1,4 +1,4 @@
--- GENIA 2026 / v3. Ejecutar nuevamente sobre bases ya existentes: conserva registros.
+-- Taller Genia 01 / v3. Ejecutar nuevamente sobre bases ya existentes: conserva registros.
 CREATE TABLE IF NOT EXISTS submissions (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   full_name VARCHAR(140) NOT NULL,

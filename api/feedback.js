@@ -7,7 +7,8 @@ export default async function handler(req,res){
  const body=req.body||{},email=typeof body.email==='string'?body.email.trim().toLowerCase():'',token=body.attemptToken;
  if(typeof token!=='string'||!/^[a-f0-9]{64}$/.test(token)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return json(res,400,{error:'Intento inválido.'});
  const rating=body.rating===null?null:Number(body.rating),topic=typeof body.topic==='string'?body.topic.trim():'';
- if((rating!==null&&(!Number.isInteger(rating)||rating<1||rating>5))||topic.length>500)return json(res,400,{error:'Retroalimentación inválida.'});
+ const topics=new Set(['Definición del problema','Cómo crear un prompt efectivo','Verificación de respuestas','Introducción a modelos y herramientas','Ninguno por ahora']);
+ if(!Number.isInteger(rating)||rating<1||rating>5||!topics.has(topic))return json(res,400,{error:'Selecciona una valoración del 1 al 5 y uno de los temas disponibles.'});
  try{
   const sql=db(),rows=await sql`SELECT token_hash,completed_at FROM quiz_attempts WHERE email_normalized=${email}`;
   if(!rows.length||!rows[0].completed_at||!eq(createHash('sha256').update(token).digest('hex'),rows[0].token_hash))return json(res,403,{error:'No autorizado.'});

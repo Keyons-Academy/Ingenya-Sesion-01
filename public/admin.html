@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
- <title>Resultados de evaluación · GENIA 2026</title>
+ <title>Resultados de evaluación · Taller Genia 01</title>
  <link rel="icon" href="/assets/logos/favicon.svg" type="image/svg+xml">
  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=TASA+Orbiter:wght@400;500;600;700&display=swap">
  <link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/admin.css"><script src="/admin.js" defer></script>
 </head>
 <body>
- <header class="hdr"><div class="wrap"><div class="hdr__ev"><span class="hdr__k">GENIA 2026</span><span class="hdr__t">Administración del taller</span></div><div class="cobrand"><img src="/assets/logos/keyons-negro.svg" alt="KeyOns"><i aria-hidden="true"></i><img src="/assets/logos/ingenya-color.png" alt="Ingenya Consultores"></div></div></header>
+ <header class="hdr"><div class="wrap"><div class="hdr__ev"><span class="hdr__k">Taller Genia 01</span><span class="hdr__t">Administración del taller</span></div><div class="cobrand"><img src="/assets/logos/keyons-negro.svg" alt="KeyOns"><i aria-hidden="true"></i><img src="/assets/logos/ingenya-color.png" alt="Ingenya Consultores"></div></div></header>
  <main class="wrap admin-main">
-  <span class="kicker">GENIA 2026 · ORGANIZACIÓN</span>
+  <span class="kicker">TALLER GENIA 01 · ORGANIZACIÓN</span>
   <h1>Resultados de evaluación</h1><p class="lead">Taller Genia 01 - Prompting con propósito</p>
   <section id="login-box" class="admin-card"><h2>Ingreso de organizadores</h2><form id="login-form">
     <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required maxlength="300"></div>
@@ -20,12 +20,12 @@
   </form></section>
   <section id="dashboard" hidden>
     <div class="admin-actions"><p>Participaciones registradas, notas y opiniones de los asistentes.</p><div class="action-buttons"><button class="btn btn--solid" id="download" type="button">Descargar Excel ↓</button><button class="btn btn--line" id="download-pdf" type="button">Descargar PDF ↓</button><button class="btn btn--line" id="logout" type="button">Cerrar sesión</button></div></div>
-    <div class="admin-stats"><div><strong id="total">0</strong><span>Participaciones</span></div><div><strong id="average">—</strong><span>Nota promedio</span></div><div><strong id="highest">—</strong><span>Nota más alta</span></div><div><strong id="ratingAvg">—</strong><span>Utilidad media / 5</span></div></div>
-    <div class="admin-tablewrap"><table><thead><tr><th>Nombre completo</th><th>Correo</th><th>Fecha y hora (Costa Rica)</th><th>Nota</th><th>Utilidad</th><th>Tema por reforzar</th></tr></thead><tbody id="results"></tbody></table></div>
-    <p class="admin-note">Se muestran hasta 3000 resultados recientes. Las exportaciones incluyen todos los registros. Los datos personales deben tratarse conforme a la política interna del taller.</p>
+    <div class="admin-stats"><div><strong id="total">0</strong><span>Participaciones</span></div><div><strong id="average">—</strong><span>Nota promedio</span></div><div><strong id="highest">—</strong><span>Nota más alta</span></div><div><strong id="ratingAvg">—</strong><span>Satisfacción media con el taller / 5</span></div></div>
+    <div class="admin-tablewrap"><table><thead><tr><th data-sort="name" aria-sort="none"><button type="button" class="sort-head">Nombre completo <span class="sort-indicator" aria-hidden="true">↕</span></button></th><th data-sort="email" aria-sort="none"><button type="button" class="sort-head">Correo <span class="sort-indicator" aria-hidden="true">↕</span></button></th><th data-sort="date" aria-sort="descending"><button type="button" class="sort-head">Fecha y hora (Costa Rica) <span class="sort-indicator" aria-hidden="true">↓</span></button></th><th data-sort="duration" aria-sort="none"><button type="button" class="sort-head">Tiempo <span class="sort-indicator" aria-hidden="true">↕</span></button></th><th data-sort="score" aria-sort="none"><button type="button" class="sort-head">Nota <span class="sort-indicator" aria-hidden="true">↕</span></button></th><th data-sort="rating" aria-sort="none"><button type="button" class="sort-head">Satisfacción / 5 <span class="sort-indicator" aria-hidden="true">↕</span></button></th><th data-sort="topic" aria-sort="none"><button type="button" class="sort-head">Tema por reforzar <span class="sort-indicator" aria-hidden="true">↕</span></button></th></tr></thead><tbody id="results"></tbody></table></div>
+    <p class="admin-note">Se muestran hasta 3000 resultados recientes. Haz clic en los encabezados para ordenar la tabla. Las exportaciones incluyen todos los registros. Los datos personales deben tratarse conforme a la política interna del taller.</p>
   </section>
   <p class="message" id="dashboard-error" role="alert" hidden></p>
  </main>
- <footer class="ft"><div class="wrap"><span class="ft__l"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#729BDD" fill-rule="evenodd" d="M1.1 1.1h17.8v17.8H1.1ZM10 5.55a4.45 4.45 0 1 0 0 8.9a4.45 4.45 0 1 0 0-8.9Z"/></svg>GENIA 2026 · Taller Genia 01 - Prompting con propósito</span><span class="ft__r">KeyOns · Ingenya Consultores</span></div></footer>
+ <footer class="ft"><div class="wrap"><span class="ft__l"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#729BDD" fill-rule="evenodd" d="M1.1 1.1h17.8v17.8H1.1ZM10 5.55a4.45 4.45 0 1 0 0 8.9a4.45 4.45 0 1 0 0-8.9Z"/></svg>Taller Genia 01 · Prompting con propósito</span><span class="ft__r">KeyOns · Ingenya Consultores</span></div></footer>
 </body>
 </html>

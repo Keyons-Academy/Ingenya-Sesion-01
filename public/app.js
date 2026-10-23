@@ -138,42 +138,66 @@
     }catch(error){err('qError',error.message+' Si el problema continúa, contacte a los organizadores.');}
     finally{state.busy=false;$('next').disabled=false;}
   }
+  const status = d => d.reviewStatus || (d.isPerfect ? 'correct' : d.yourAnswer === 'Sin responder' ? 'unanswered' : 'incorrect');
+  const statusText = {correct:'Correcta',partial:'Parcialmente acertada',incorrect:'Para revisar',unanswered:'Sin responder'};
   function showResult(){
     const result=state.result;if(!result)return;
     $('nota').textContent=result.score;
     $('completedMessage').textContent='Registrado el '+result.completedAt+' (hora de Costa Rica).';
-    const pending=result.details.filter(d=>!d.isPerfect).length;
-    $('reviewMessage').textContent=pending?`${pending} pregunta(s) con elementos para repasar.`:'Todas las preguntas fueron respondidas correctamente.';
+    const partial=result.details.filter(d=>status(d)==='partial').length;
+    const other=result.details.filter(d=>['incorrect','unanswered'].includes(status(d))).length;
+    const notes=[];
+    if(partial)notes.push(`${partial} parcialmente acertada${partial===1?'':'s'}`);
+    if(other)notes.push(`${other} por revisar`);
+    $('reviewMessage').textContent=notes.length?`${notes.join(' · ')}. Puedes ver qué identificaste bien y qué te faltó.`:'Todas las preguntas fueron respondidas correctamente.';
     const bar=$('bar');bar.replaceChildren();
-    result.details.forEach(d=>{const el=make('i');el.className=d.points===10?'ok':d.points>0?'partial':'no';bar.append(el);});
+    result.details.forEach(d=>{const el=make('i');el.className=status(d)==='correct'?'ok':status(d)==='partial'?'partial':'no';bar.append(el);});
     if(state.feedbackSent){$('feedbackForm').hidden=true;$('feedbackInfo').textContent='Gracias por tu opinión.';}
     else {$('feedbackForm').hidden=false;}
     setStep('end');
   }
   const multiline = (parent,label,value,kind) => {
     const row=put(parent,make('div','ans'));
-    const symbol=put(row,make('span','ans__ic '+kind));symbol.textContent=kind==='ok'?'✓':kind==='no'?'×':'—';
+    const symbol=put(row,make('span','ans__ic '+kind));symbol.textContent=kind==='ok'?'✓':kind==='no'?'×':kind==='partial'?'≈':'—';
     const content=put(row,make('div'));put(content,make('div','ans__l',label));put(content,make('div','ans__t',value));
+  };
+  const reviewList = (parent, label, values, type) => {
+    if(!Array.isArray(values)||!values.length)return;
+    const container=put(parent,make('div','review-list review-list--'+type));
+    put(container,make('p','review-list__label',label));
+    const ul=put(container,make('ul','review-list__items'));
+    for(const item of values)put(ul,make('li','',item));
   };
   function paintReview(){
     const result=state.result;if(!result)return;
     const list=$('rlist');list.replaceChildren();
     const filtered=result.details.map((d,i)=>({...d,num:i+1})).filter(d=>state.filter==='all'||(state.filter==='ok'?d.isPerfect:!d.isPerfect));
-    $('sum').textContent=`${result.correct} de 10 preguntas completamente correctas. Puedes revisar los pasos o criterios que conviene reforzar.`;
+    const partial=result.details.filter(d=>status(d)==='partial').length;
+    $('sum').textContent=`${result.correct} de 10 respuestas completamente correctas${partial?`, ${partial} parcialmente acertada${partial===1?'':'s'}`:''}. Cada pregunta suma un punto solo si está completamente correcta; los aciertos parciales sirven para orientar el repaso.`;
     document.querySelectorAll('[data-rf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rf===state.filter)));
     if(!filtered.length){put(list,make('li','ri','No hay preguntas en esta categoría.'));return;}
     filtered.forEach(d=>{
+      const s=status(d);
       const li=put(list,make('li','ri'));
-      li.dataset.s=d.isPerfect?'ok':'no';
+      li.dataset.s=s;
       const head=put(li,make('button','ri__h'));head.type='button';head.setAttribute('aria-expanded','false');
       put(head,make('span','ri__n',String(d.num).padStart(2,'0')));
       put(head,make('span','ri__q',d.question));
-      put(head,make('span','ri__s',`${d.points}/10 puntos`));
+      const marker=put(head,make('span','ri__s',statusText[s]));
+      marker.setAttribute('aria-label',`${statusText[s]} · ${d.isPerfect?1:0} de 1 punto`);
       put(head,make('span','ri__c'));
       const body=put(li,make('div','ri__b'));
-      multiline(body,'Tu respuesta',d.yourAnswer,d.isPerfect?'ok':'no');
+      const msg=put(body,make('div','review-message review-message--'+s));
+      put(msg,make('span','review-message__title',statusText[s]));
+      put(msg,make('p','review-message__text',d.reviewSummary || (d.isPerfect?'Respuesta correcta.':'Revisa la respuesta esperada y su explicación.')));
+      multiline(body,'Tu respuesta',d.yourAnswer,s==='correct'?'ok':s==='partial'?'partial':s==='unanswered'?'na':'no');
+      if(s==='partial'){
+        reviewList(body,d.type==='order'?'Pasos que colocaste correctamente':d.type==='match'?'Relaciones que acertaste':'Lo que seleccionaste correctamente',d.reviewCorrect,'correct');
+        reviewList(body,d.type==='order'?'Posiciones que debes revisar':d.type==='match'?'Relaciones que faltaron':'Opciones que faltó seleccionar',d.reviewMissing,'missing');
+        reviewList(body,'Opciones marcadas que no correspondían',d.reviewIncorrect,'incorrect');
+      }
       if(!d.isPerfect)multiline(body,'Respuesta esperada',d.correctAnswer,'ok');
-      const why=put(body,make('div','why'));put(why,make('b','','Por qué'));put(why,make('span','',d.explanation));
+      const why=put(body,make('div','why'));put(why,make('b','','Para recordar'));put(why,make('span','',d.explanation));
       head.addEventListener('click',()=>{const expanded=li.classList.toggle('is-open');head.setAttribute('aria-expanded',String(expanded));});
     });
   }
@@ -181,11 +205,11 @@
     e.preventDefault();if(state.feedbackSent)return;
     const rating=document.querySelector('input[name="rating"]:checked');
     const topic=$('feedbackTopic').value.trim();
-    if(!rating && !topic){$('feedbackInfo').textContent='Selecciona una valoración o escribe un comentario antes de enviar.';return;}
+    if(!rating || !topic){$('feedbackInfo').textContent='Para enviar tu opinión selecciona una valoración y un tema. Esta sección es opcional.';return;}
     $('feedbackBtn').disabled=true;$('feedbackInfo').textContent='Guardando tu opinión…';
     try{
       await request('/api/feedback',{email:state.email,attemptToken:state.token,rating:rating?Number(rating.value):null,topic});
-      state.feedbackSent=true;save();$('feedbackForm').hidden=true;$('feedbackInfo').textContent='¡Gracias por compartir tu opinión!';
+      state.feedbackSent=true;save();$('feedbackForm').hidden=true;$('feedbackInfo').textContent='Tu opinión quedó registrada.';
     }catch(ex){$('feedbackInfo').textContent=ex.message;$('feedbackBtn').disabled=false;}
   }
   async function hydrate(){

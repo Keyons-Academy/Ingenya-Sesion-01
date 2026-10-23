@@ -23,7 +23,7 @@ export default async function handler(req,res){
   if(now<deadline && publicQ.some(q=>!isAnswered(q,body.answers?.[q.id])))return json(res,400,{error:'Complete las diez preguntas antes de finalizar. Si el tiempo termina, se registrará lo que haya respondido.'});
   const graded=grade(attempt.presentation,body.answers);
   const rows=await sql`INSERT INTO submissions(full_name,email,email_normalized,answers,question_scores,correct_count,score,passed)
-   VALUES (${attempt.full_name},${email},${email},${JSON.stringify(body.answers)}::jsonb,${JSON.stringify(Object.fromEntries(graded.details.map(x=>[x.id,x.points])))}::jsonb,${graded.correctCount},${graded.score},${false})
+   VALUES (${attempt.full_name},${email},${email},${JSON.stringify(body.answers)}::jsonb,${JSON.stringify(Object.fromEntries(graded.details.map(x=>[x.id,x.points])))}::jsonb,${graded.correctCount},${graded.score * 10},${false})
    ON CONFLICT (email_normalized) DO NOTHING RETURNING id,submitted_at`;
   if(!rows.length)return json(res,409,{error:'Este participante ya tiene un resultado registrado.'});
   await sql`UPDATE quiz_attempts SET completed_at=NOW() WHERE email_normalized=${email} AND completed_at IS NULL`;

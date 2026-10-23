@@ -13,11 +13,19 @@
 .admin-stats strong{font:500 42px var(--display);line-height:1}
 .admin-stats span{font-size:13px;color:var(--t3)}
 .admin-tablewrap{overflow-x:auto;background:white;border:1px solid var(--line)}
-.admin-tablewrap table{border-collapse:collapse;width:100%;min-width:850px;font-size:13px}
+.admin-tablewrap table{border-collapse:collapse;width:100%;min-width:1060px;font-size:13px}
 .admin-tablewrap th{text-align:left;background:var(--noche);color:white;font-weight:600;padding:14px 16px;white-space:nowrap}
 .admin-tablewrap td{padding:16px;border-bottom:1px solid var(--line);vertical-align:top}
 .admin-tablewrap tr:nth-child(even) td{background:#F8F9FC}
-.admin-tablewrap td:nth-child(4){font-weight:700;white-space:nowrap}
+.admin-tablewrap td:nth-child(5){font-weight:700;white-space:nowrap}
 .admin-note{font-size:12px;color:var(--t3);margin-top:18px}
 #dashboard[hidden],#login-box[hidden]{display:none}
 @media(max-width:760px){.admin-main{padding-top:38px;padding-bottom:50px}.admin-card{padding:22px}.admin-actions{display:block}.admin-actions .action-buttons{margin-top:18px}.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-stats>div{padding:17px}.admin-stats strong{font-size:34px}.action-buttons .btn{font-size:11px}}
+
+/* Encabezados ordenables; accesibles por teclado y con indicador visible. */
+.admin-tablewrap .sort-head{font:inherit;font-weight:600;line-height:1.4;background:transparent;color:#fff;padding:0;margin:0;border:0;cursor:pointer;white-space:nowrap;text-align:left;display:inline-flex;align-items:center;gap:8px}
+.admin-tablewrap .sort-head:hover{text-decoration:underline}
+.admin-tablewrap .sort-head:focus-visible{outline:2px solid var(--cielo);outline-offset:5px}
+.admin-tablewrap .sort-indicator{display:inline-block;min-width:11px;opacity:.8;font-weight:700}
+.admin-tablewrap th[aria-sort="ascending"] .sort-indicator,.admin-tablewrap th[aria-sort="descending"] .sort-indicator{opacity:1;color:#fff}
+.admin-stats span{line-height:1.45}

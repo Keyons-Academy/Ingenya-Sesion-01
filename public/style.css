@@ -321,3 +321,35 @@ body[data-step="quiz"] .start,body[data-step="end"] .start,body[data-step="rev"]
  .end>.score{padding-top:0}
  .end>.feedback{margin-top:0}
 }
+
+/* Selector de temas: mismo lenguaje visual que los campos de registro. */
+.feedback select{display:block;width:100%;max-width:540px;margin-top:10px;min-height:48px;padding:12px 16px;border:1px solid var(--line-2);border-radius:0;background:#fff;color:var(--noche);font:14px var(--sans)}
+.feedback select:focus-visible{outline:2px solid var(--cielo);outline-offset:2px}
+.feedback-help{font-size:12px!important;margin-top:8px!important}
+
+/* Retroalimentación formativa: estado distinto de la puntuación. */
+.leg .partial::before{background:var(--cielo)}
+.ri[data-s="partial"] .ri__s::before{background:var(--cielo)}
+.ri[data-s="incorrect"] .ri__s::before,.ri[data-s="unanswered"] .ri__s::before{background:var(--salmon)}
+.ri__s{white-space:normal;text-align:right;max-width:170px;line-height:1.35}
+.ans__ic.partial{color:var(--cielo)}
+.review-message{padding:14px 18px;border-left:3px solid var(--line-2);background:var(--puro);margin-bottom:12px}
+.review-message--correct{border-color:var(--noche)}
+.review-message--partial{border-color:var(--cielo)}
+.review-message--incorrect,.review-message--unanswered{border-color:var(--salmon)}
+.review-message__title{display:block;font-weight:700;font-size:13px;color:var(--noche)}
+.review-message__text{margin-top:5px;font-size:14px;line-height:1.6;color:var(--t2)}
+.review-list{margin:12px 0 12px 34px;padding:12px 14px;background:var(--puro);border-left:2px solid var(--line-2)}
+.review-list--correct{border-color:var(--cielo)}
+.review-list--missing,.review-list--incorrect{border-color:var(--salmon-suave)}
+.review-list__label{font-size:12px;font-weight:700;color:var(--t1);margin:0 0 8px}
+.review-list__items{margin:0;padding-left:18px;list-style:disc}
+.review-list__items li{font-size:14px;line-height:1.55;color:var(--t2);padding:2px 0;overflow-wrap:anywhere}
+@media(max-width:760px){
+ .ri__h{grid-template-columns:26px minmax(0,1fr) 20px;row-gap:6px}
+ .ri__s{grid-column:2;grid-row:2;justify-self:start;text-align:left;max-width:none}
+ .ri__c{grid-column:3;grid-row:1}
+ .review-list{margin-left:0;padding:10px 12px}
+ .review-message{padding:12px}
+ .leg{gap:10px 14px}
+}
