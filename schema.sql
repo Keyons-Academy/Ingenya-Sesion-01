@@ -6,10 +6,19 @@ CREATE TABLE IF NOT EXISTS submissions (
   answers JSONB NOT NULL,
   correct_count SMALLINT NOT NULL CHECK (correct_count BETWEEN 0 AND 10),
   score SMALLINT NOT NULL CHECK (score BETWEEN 0 AND 100),
-  passed BOOLEAN NOT NULL,
+  passed BOOLEAN NOT NULL DEFAULT FALSE,
   submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS submissions_submitted_at_idx ON submissions (submitted_at DESC);
+CREATE TABLE IF NOT EXISTS quiz_attempts (
+  email_normalized VARCHAR(254) PRIMARY KEY,
+  full_name VARCHAR(140) NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL,
+  completed_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS quiz_attempts_started_idx ON quiz_attempts (started_at DESC);
 CREATE TABLE IF NOT EXISTS admin_login_limits (
   ip_hash TEXT PRIMARY KEY,
   attempts INT NOT NULL DEFAULT 0,

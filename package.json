@@ -8,10 +8,15 @@
     "start": "vercel dev",
     "hash-password": "node scripts/hash-password.js"
   },
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
-    "exceljs": "^4.4.0"
+    "exceljs": "^4.4.0",
+    "pdfkit": "^0.17.1"
   },
-  "devDependencies": {"vercel": "^48.0.0"}
+  "devDependencies": {
+    "vercel": "^48.0.0"
+  }
 }

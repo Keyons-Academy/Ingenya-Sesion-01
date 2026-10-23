@@ -49,3 +49,14 @@ Aplicación para Vercel con 10 preguntas de selección única, barra de progreso
 
 ## Notas de operación
 El servidor necesita acceso válido a Neon para registrar calificaciones. No se incluye almacenamiento local que pueda perder datos con despliegues serverless. La interfaz es estática; el backend son funciones de Vercel. ExcelJS genera el `.xlsx` bajo demanda. Como medida operacional, asegurar respaldos de Neon y control de acceso a la cuenta de Vercel.
+
+
+## Versión 2 — Prompting con propósito
+
+- Las diez preguntas son de nivel intermedio, con una respuesta correcta por pregunta.
+- El reloj de doce minutos comienza cuando el servidor registra el inicio y no se reinicia recargando la página. El correo queda reservado como un único intento desde ese momento.
+- Si el tiempo vence mientras la página está abierta, el navegador envía las respuestas elegidas. El servidor admite un margen técnico de 15 segundos para el envío; si la persona cierra la página antes del envío, tendrá que comunicarse con los organizadores para gestionar el caso.
+- Reejecutar `schema.sql` en Neon es **obligatorio** para crear la tabla nueva `quiz_attempts` antes de actualizar el despliegue. Es idempotente y no elimina resultados previos.
+- Los informes Excel y PDF están disponibles únicamente con la sesión administrativa; no hay botón de descarga para participantes.
+- Para las pruebas, use un correo no utilizado o elimine expresamente un intento de prueba desde Neon: el comienzo, no solo el resultado, consume el intento.
+- Al desplegar, ejecutar `npm install` para instalar `pdfkit`; la configuración de Vercel debe permitir funciones Node.js.
