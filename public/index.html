@@ -1,9 +1,86 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Prompting con propósito | GENIA 2026</title><link rel="stylesheet" href="/style.css"></head><body><div class="shell">
-<header class="top"><div><div class="eyebrow">GENIA 2026</div><div class="logo">Taller Genia 01</div></div><img class="brand-logo" src="/logo-keyons-ingenya.png" alt="KeyOns e Ingenya"></header>
-<main class="content">
-<section id="welcome"><div class="eyebrow">TALLER GENIA 01</div><h1>Prompting con propósito</h1><p class="lead">Una actividad breve para repasar cómo plantear problemas, crear instrucciones útiles y revisar con criterio los resultados de la IA.</p><div class="card form"><h3>Para comenzar</h3><form id="start-form"><div class="field"><label for="fullName">Nombre completo</label><input type="text" id="fullName" autocomplete="name" maxlength="140" minlength="5" required placeholder="Nombre y apellidos"></div><div class="field"><label for="email">Correo electrónico</label><input type="email" id="email" autocomplete="email" maxlength="254" required placeholder="nombre@empresa.com"></div>
-<div class="rules"><strong>Antes de iniciar</strong><p>Son 10 preguntas de selección única. Tendrás <strong>12 minutos</strong> desde que pulses «Comenzar» y <strong>un solo intento</strong> por correo. Puedes volver a preguntas anteriores mientras quede tiempo. Cuando termine el tiempo, se enviarán automáticamente las respuestas que hayas marcado.</p><p>Al finalizar verás tu nota y, si corresponde, una explicación de las respuestas que puedes repasar. No necesitas descargar nada.</p></div>
-<p class="note">Se guardan nombre, correo, respuestas, nota y fecha/hora para fines del taller. Los reportes completos son exclusivos de los organizadores.</p><button class="btn" type="submit">Comenzar →</button><div id="start-error" class="hidden error" role="alert"></div></form></div></section>
-<section id="quiz" class="hidden"><div class="progress-head"><span id="progress-label" style="font-weight:700">Pregunta 1 de 10</span><span class="timer" id="timer" role="timer" aria-label="Tiempo restante">12:00</span></div><div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1" id="progress-track"><div class="bar" id="progress-bar"></div></div><div class="question-meta" id="category"></div><h2 class="question-title" id="question"></h2><div class="options" id="options" role="radiogroup" aria-label="Selecciona una respuesta"></div><div class="question-actions"><button type="button" class="btn secondary" id="prev">← Anterior</button><button type="button" class="btn" id="next" disabled>Siguiente →</button></div><div id="quiz-error" class="hidden error" role="alert"></div><p class="note">Puedes cambiar tus respuestas dentro de los 12 minutos. En la última pregunta, selecciona «Finalizar» para registrar tu resultado.</p></section>
-<section id="result" class="hidden" aria-live="polite"><div class="eyebrow">ACTIVIDAD COMPLETADA</div><h1>Tu resultado</h1><p class="lead" id="result-name"></p><div class="result-hero"><div class="flex between"><div><div class="score" id="score"></div><p id="verdict" class="note"></p></div><div class="pill" id="completed"></div></div></div><div id="review-area"></div><p class="note">Tu participación quedó registrada. Gracias por formar parte del Taller Genia 01.</p></section>
-</main><footer class="foot"><span class="footer-left"><span class="foot-icon"></span> GENIA 2026 &nbsp; • &nbsp; Taller Genia 01 - Prompting con propósito</span><span class="foot-icon coral"></span></footer></div><script src="/app.js" defer></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F4F4F4"><title>Prompting con propósito · GENIA 2026</title>
+  <link rel="icon" href="/assets/logos/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=TASA+Orbiter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body data-step="start">
+  <header class="hdr"><div class="wrap">
+    <div class="hdr__ev"><span class="hdr__k">GENIA 2026</span><span class="hdr__t">Taller Genia 01 · Prompting con propósito</span></div>
+    <div class="cobrand"><img src="/assets/logos/keyons-negro.svg" alt="KeyOns"><i aria-hidden="true"></i><img src="/assets/logos/ingenya-color.png" alt="Ingenya Consultores"></div>
+  </div></header>
+  <div class="cover" role="img" aria-label="Fotografía del cielo al amanecer"></div>
+  <main class="wrap">
+    <section class="start" aria-labelledby="titulo">
+      <span class="kicker s-kick">GENIA 2026 · SESIÓN 01</span>
+      <div class="s-head"><h1 id="titulo">Prompting con propósito</h1>
+        <p class="lead">Una actividad breve para repasar cómo plantear problemas, dar buenas instrucciones y revisar con criterio los resultados de la IA.</p></div>
+      <aside class="brief" aria-label="Antes de iniciar">
+        <p class="brief__t">Antes de comenzar</p>
+        <div class="brief__i"><span class="brief__ic" aria-hidden="true"><svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="4" width="18" height="24" rx="1"/><path d="M12 11h9M12 16h9M12 21h6"/></svg></span><div><p class="brief__v">10 preguntas</p><p class="brief__d">Selección, orden y relación de conceptos.</p></div></div>
+        <div class="brief__i"><span class="brief__ic" aria-hidden="true"><svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="16" cy="16" r="11"/><path d="M16 8v8l5 3"/></svg></span><div><p class="brief__v">12 minutos</p><p class="brief__d">El tiempo comienza al pulsar «Comenzar» y no se pausa.</p></div></div>
+        <div class="brief__i"><span class="brief__ic" aria-hidden="true"><svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 10v-4h16v20H8v-4M4 16h19m-5-5 5 5-5 5"/></svg></span><div><p class="brief__v">Un solo intento</p><p class="brief__d">Puedes volver a preguntas anteriores mientras quede tiempo.</p></div></div>
+        <p class="brief__n">Las preguntas y respuestas tienen un orden distinto para cada participante. Si se agota el tiempo, se envían las respuestas marcadas. Al terminar verás tu nota y explicaciones para repasar.</p>
+      </aside>
+      <div class="s-form">
+        <form class="fields" id="startForm">
+          <div class="field"><label for="nombre">Nombre completo</label><input id="nombre" name="nombre" type="text" maxlength="140" autocomplete="name" required placeholder="Tu nombre completo"></div>
+          <div class="field"><label for="correo">Correo electrónico</label><input id="correo" name="correo" type="email" maxlength="254" autocomplete="email" required placeholder="tu@empresa.com"></div>
+        </form>
+        <p class="privacy">Tus datos y respuestas se usarán para el seguimiento del aprendizaje durante el taller.</p>
+        <div class="cta"><button class="btn btn--solid" type="submit" form="startForm" id="startBtn">Comenzar <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9.2 4.2 13 8l-3.8 3.8"/></svg></button></div>
+        <p class="message" id="startError" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <section class="quiz" aria-label="Preguntas" id="quiz">
+      <div class="qtop"><p class="qn">Pregunta <b id="qi">1</b> de <b>10</b></p><p class="timer" id="timer">Tiempo <b id="clock">12:00</b></p></div>
+      <div class="prog" id="prog" role="progressbar" aria-label="Progreso de preguntas" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"></div>
+      <div class="q" id="questionContainer" aria-live="polite">
+        <span class="kicker" id="qk">Tema</span><h2 id="qt"></h2><p id="qInstruction" class="qinstructions"></p>
+        <div id="qFields"></div>
+      </div>
+      <p id="qError" class="message" role="alert" hidden></p>
+      <div class="qnav"><button class="btn btn--line" type="button" id="prev"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M6.8 4.2 3 8l3.8 3.8"/></svg>Anterior</button><button class="btn btn--solid" type="button" id="next"><span id="nextL">Siguiente</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9.2 4.2 13 8l-3.8 3.8"/></svg></button></div>
+      <p class="qhelp">Puedes revisar tus respuestas antes de finalizar. Al terminar el tiempo, se envía lo que hayas respondido.</p>
+    </section>
+
+    <section class="end" id="end" aria-label="Resultados">
+      <div class="end__main">
+        <span class="kicker">GENIA 2026 · TU PARTICIPACIÓN</span><h1 style="margin-top:20px">Gracias por participar</h1>
+        <p class="end__msg" id="endMessage">Tu actividad ha sido registrada. Esta nota es una referencia para seguir aprendiendo y no representa una certificación.</p>
+        <div class="next"><p class="lbl">Tu repaso</p><dl class="rows">
+          <div><dt>Resultado</dt><dd id="completedMessage">Respuestas registradas.</dd></div>
+          <div><dt>Para revisar</dt><dd id="reviewMessage">Consulta las explicaciones de las preguntas que necesiten refuerzo.</dd></div>
+          <div><dt>Siguiente paso</dt><dd>Continúa practicando lo aprendido durante el taller.</dd></div>
+        </dl></div>
+        <div class="cta"><button class="btn btn--solid" id="toRev" type="button">Ver las explicaciones <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9.2 4.2 13 8l-3.8 3.8"/></svg></button></div>
+
+      </div>
+      <div class="score"><p class="lbl">Tu nota</p><p class="score__n"><span id="nota">0</span><small>de 100</small></p><div class="score__bar" id="bar" aria-hidden="true"></div><p class="leg"><span class="ok">Puntos obtenidos</span><span class="no">Puntos restantes</span></p></div>
+      <form class="feedback" id="feedbackForm">
+                <h2>Tu opinión nos ayuda</h2><p>Dos preguntas breves; no afectan tu nota.</p>
+                <fieldset><legend>¿Qué tan útil te pareció esta sesión para tu trabajo?</legend>
+                  <div class="rating"><label><input type="radio" name="rating" value="1"><span>1</span></label><label><input type="radio" name="rating" value="2"><span>2</span></label><label><input type="radio" name="rating" value="3"><span>3</span></label><label><input type="radio" name="rating" value="4"><span>4</span></label><label><input type="radio" name="rating" value="5"><span>5</span></label></div>
+                  <div class="rating-labels"><span>Nada útil</span><span>Muy útil</span></div>
+                </fieldset>
+                <div class="field" style="margin-top:26px"><label for="feedbackTopic">¿Qué tema te gustaría reforzar? (opcional)</label><textarea id="feedbackTopic" maxlength="500" placeholder="Una o dos líneas son suficientes."></textarea></div>
+                <button class="btn btn--line" type="submit" id="feedbackBtn">Enviar opinión</button><p id="feedbackInfo" class="status-inline" role="status"></p>
+              </form>
+    </section>
+
+    <section class="rev" id="review" aria-labelledby="reviewTitle">
+      <button class="back" type="button" id="back"><svg class="ico" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M5 16 13 8l2 2-5 5h17v3H10l5 5-2 2z"/></svg>Volver al resultado</button>
+      <span class="kicker">REPASO DE LA SESIÓN</span><h1 id="reviewTitle" style="margin-top:20px">Las respuestas, una a una</h1><p class="rev__sum" id="sum"></p>
+      <div class="tabs" role="group" aria-label="Filtrar preguntas"><button type="button" data-rf="rep" aria-pressed="true">Para repasar</button><button type="button" data-rf="ok" aria-pressed="false">Correctas</button><button type="button" data-rf="all" aria-pressed="false">Todas</button></div>
+      <ol class="rlist" id="rlist"></ol>
+    </section>
+  </main>
+  <footer class="ft"><div class="wrap"><span class="ft__l"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#729BDD" fill-rule="evenodd" d="M1.1 1.1h17.8v17.8H1.1ZM10 5.55a4.45 4.45 0 1 0 0 8.9a4.45 4.45 0 1 0 0-8.9Z"/></svg> GENIA 2026 · Taller Genia 01 - Prompting con propósito</span><span class="ft__r">KeyOns · Ingenya Consultores</span></div></footer>
+</body>
+</html>

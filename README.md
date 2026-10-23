@@ -1,62 +1,97 @@
-# GENIA 2026 — Evaluación de Nivelación 01
+# GENIA 2026 · Taller Genia 01 — Prompting con propósito
 
-Aplicación para Vercel con 10 preguntas de selección única, barra de progreso, aprobación con **80/100**, retroalimentación de errores, registro del momento de entrega en **America/Costa_Rica**, base de datos PostgreSQL (Neon) y panel privado con exportación a Excel.
+Aplicación lista para desplegar en **Vercel** (archivos estáticos + funciones Node.js), basada en el diseño original de `genia-formulario.zip`, con la identidad de KeyOns e Ingenya.
 
-## Requisitos
-- Node.js 20 o superior, cuenta de Vercel y base de datos PostgreSQL de **Neon** (puede crearse desde Vercel Marketplace).
-- Variables de entorno `DATABASE_URL`, `ADMIN_PASSWORD_HASH` y `SESSION_SECRET`.
+## Qué incluye
 
-## Desplegar
-1. Subir **la carpeta completa** del proyecto a un repositorio GitHub privado. Importarlo en Vercel. La raíz del proyecto debe contener `package.json`, `api/`, `lib/` y `public/`.
-2. Crear una base de datos Neon PostgreSQL y ejecutar **`schema.sql`** en el SQL editor de Neon, una sola vez.
-3. Añadir `DATABASE_URL` en **Vercel → Project → Settings → Environment Variables**. La URL debe requerir SSL. No usarla desde el frontend.
-4. Definir contraseña fuerte (mínimo 14 caracteres) y generar su hash **localmente** con `npm run hash-password -- "tu-contraseña-muy-segura"`. Colocar el resultado completo de `ADMIN_PASSWORD_HASH` en variables de Vercel. Nunca incluir la contraseña en Git.
-5. Generar secreto aleatorio con `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` y configurar `SESSION_SECRET` en Vercel.
-6. Desplegar (o redeploy después de configurar las variables). Abrir `/` para alumnos y `/admin.html` solo para los organizadores.
-7. Probar con una dirección de correo de prueba. Confirmar que un segundo envío con el mismo correo sea rechazado y que `/api/admin/export` sin sesión dé 401.
+- Las **10 preguntas definitivas** de la sesión 01: 6 de opción única, 2 de selección múltiple, 1 para ordenar pasos y 1 para relacionar herramientas.
+- **Aleatorización por participante** del orden de las preguntas y de todas las opciones que admiten orden. Cada intento queda guardado con su orden en PostgreSQL y no cambia al navegar o recuperar el intento.
+- **12 minutos** desde que el servidor registra el comienzo; el temporizador no se reinicia al recargar. Al acabarse el tiempo, se envían las respuestas marcadas si la pestaña sigue abierta. Hay un margen técnico de red de 15 segundos, no para responder más tiempo.
+- **Un intento por correo declarado** (no es verificación de identidad). La base de datos impide un segundo registro de inicio con el mismo correo.
+- Calificación **0–100**, sin etiquetas de aprobación/reprobación. Hasta 10 puntos por pregunta; hay crédito parcial en ejercicios de ordenar, relacionar y selección múltiple. En selección múltiple se penalizan distractores seleccionados.
+- Resultado individual y repaso con respuestas esperadas y explicaciones de las preguntas incorrectas o parcialmente correctas.
+- Dos preguntas finales de opinión (utilidad de 1 a 5 y tema para reforzar), opcionales, sin efecto en la nota.
+- Administración protegida por contraseña, con listado de resultados y exportación privada a **Excel y PDF**.
+- Diseño responsive, verificado mediante recorrido de interfaz en 1440, 390 y 320 px de ancho.
 
-## Seguridad y reglas
-- La clave de respuestas existe únicamente en `lib/questions.js` y se corrige en `/api/submit`. El navegador recibe solo preguntas y opciones.
-- Cada **correo normalizado** puede entregar **una única vez**, impuesto por índice `UNIQUE` en base de datos (protege incluso contra entregas simultáneas).
-- **Importante:** un correo escrito por el usuario no demuestra su identidad. Con el diseño actual, alguien que conozca el correo de otra persona podría utilizarlo primero. Para impedir suplantaciones con mayor garantía, hace falta autenticación por correo con código de un solo uso (OTP), SSO corporativo o invitaciones personales verificadas. La presente versión implementa un intento por correo declarado, no identidad verificada.
-- Las rutas de reportes y exportación verifican cookie de sesión `HttpOnly`, `Secure`, `SameSite=Strict`, firmada con HMAC-SHA256 y caducidad de 8 horas.
-- El inicio de sesión utiliza hash `scrypt` con sal y bloqueo temporal después de 5 fallos por origen durante 15 minutos. Se verifica `Origin` en peticiones de modificación.
-- **Nunca** publicar `DATABASE_URL`, `ADMIN_PASSWORD_HASH`, `SESSION_SECRET` o contenido de `lib/questions.js` en rutas del sitio. Si el repositorio se hace público, `lib/questions.js` revelará la clave en Git; se recomienda repositorio privado.
-- La descarga Excel se genera **solo en el servidor** tras verificar acceso administrativo.
-- Datos personales: nombre, correo, respuestas y fecha de presentación. Informar a participantes sobre finalidad, responsables y retención de estos datos, y establecer una política de eliminación de registros acorde a su organización.
-- Solo el navegador de administradores con sesión válida puede exportar; desaconsejado compartir el equipo con la sesión abierta.
+## Actualización de una versión anterior
 
-## Rutas
-| Ruta | Acceso | Uso |
-|---|---|---|
-| `/` | Público | Evaluación |
-| `/admin.html` | Página visible, contenidos protegidos | Inicio de sesión de administración |
-| `/api/questions` | Público | Preguntas sin respuestas correctas |
-| `/api/submit` | Público, POST | Corrección y registro de intento único |
-| `/api/admin/login` | Público, POST | Autenticación admin |
-| `/api/admin/results` | Solo admin | Resultados recientes |
-| `/api/admin/export` | Solo admin | Archivo Excel con resultados y clave |
+1. Haz respaldo de tu base de datos actual en Neon antes de actualizar.
+2. En **Neon → SQL Editor**, ejecuta **todo `schema.sql`**. Contiene `CREATE TABLE IF NOT EXISTS` y `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` para conservar resultados previos y añadir los datos nuevos. **No borres las tablas**.
+3. Sube los archivos de esta carpeta al mismo repositorio de GitHub, reemplazando los anteriores. Asegúrate de que en la raíz queden `package.json`, `api/`, `lib/`, `public/`, `schema.sql` y `vercel.json`.
+4. Vercel despliega automáticamente si ya está conectado al repositorio. En caso contrario, importa el repositorio y elige raíz `./`, framework `Other`. El archivo `vercel.json` define `public` como directorio de salida.
+5. Mantén las variables de entorno existentes: `DATABASE_URL`, `ADMIN_PASSWORD_HASH`, `SESSION_SECRET`. **No es necesario reemplazarlas si ya funcionan.**
+6. Ejecuta `npm test` localmente si quieres verificar el banco de preguntas y el sistema de aleatorización. Prueba un intento completo en Vercel con un correo de prueba nuevo antes de dar el enlace.
 
-## Pruebas de aceptación
-1. Inicio sin nombre completo no permite avanzar.
-2. No se puede avanzar sin seleccionar respuesta.
-3. Permite volver y cambiar respuestas antes de finalizar.
-4. Confirma entrega final y guarda una sola vez por correo.
-5. Muestra nota, estado y corrección solo de los errores.
-6. El participante no ve enlaces de exportación.
-7. Solo sesión admin permite listar y descargar Excel.
-8. Excel incluye nombre, correo, fecha/hora Costa Rica, puntuación, estado y respuestas por pregunta.
+**Nota de compatibilidad:** Si ya había resultados con preguntas anteriores, se mantienen. La nueva columna de puntos por pregunta aparecerá sin datos para esas participaciones históricas.
 
-## Notas de operación
-El servidor necesita acceso válido a Neon para registrar calificaciones. No se incluye almacenamiento local que pueda perder datos con despliegues serverless. La interfaz es estática; el backend son funciones de Vercel. ExcelJS genera el `.xlsx` bajo demanda. Como medida operacional, asegurar respaldos de Neon y control de acceso a la cuenta de Vercel.
+## Despliegue inicial en Vercel
 
+### 1. PostgreSQL en Neon
 
-## Versión 2 — Prompting con propósito
+Crea una base de datos en [Neon](https://neon.tech), copia su connection string a `DATABASE_URL` y ejecuta `schema.sql` desde el SQL Editor.
 
-- Las diez preguntas son de nivel intermedio, con una respuesta correcta por pregunta.
-- El reloj de doce minutos comienza cuando el servidor registra el inicio y no se reinicia recargando la página. El correo queda reservado como un único intento desde ese momento.
-- Si el tiempo vence mientras la página está abierta, el navegador envía las respuestas elegidas. El servidor admite un margen técnico de 15 segundos para el envío; si la persona cierra la página antes del envío, tendrá que comunicarse con los organizadores para gestionar el caso.
-- Reejecutar `schema.sql` en Neon es **obligatorio** para crear la tabla nueva `quiz_attempts` antes de actualizar el despliegue. Es idempotente y no elimina resultados previos.
-- Los informes Excel y PDF están disponibles únicamente con la sesión administrativa; no hay botón de descarga para participantes.
-- Para las pruebas, use un correo no utilizado o elimine expresamente un intento de prueba desde Neon: el comienzo, no solo el resultado, consume el intento.
-- Al desplegar, ejecutar `npm install` para instalar `pdfkit`; la configuración de Vercel debe permitir funciones Node.js.
+### 2. Variables de entorno
+
+| Key | Value |
+|---|---|
+| `DATABASE_URL` | Cadena PostgreSQL con SSL de Neon |
+| `ADMIN_PASSWORD_HASH` | Hash scrypt generado con `npm run hash-password -- "contraseña-segura-de-14-caracteres-o-más"` |
+| `SESSION_SECRET` | Cadena secreta aleatoria generada con `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+
+En Vercel, configura estas variables para `Production` y para los entornos adicionales que vayas a utilizar. No las publiques ni las subas a GitHub.
+
+### 3. Aplicación
+
+Importa el repositorio. Vercel detectará las funciones en `api/` y servirá el sitio desde `public/`. Si las variables se configuraron después, ejecuta **Redeploy**.
+
+- **Participantes:** `https://tu-dominio/`
+- **Administración:** `https://tu-dominio/admin.html`
+
+## Seguridad y privacidad
+
+- Preguntas y opciones se asignan con aleatorización criptográfica del servidor y se almacenan en `quiz_attempts.presentation` para mantener el orden en un intento.
+- La clave de corrección se encuentra solo en `lib/questions.js`, fuera de `public/`. El archivo `/api/questions` ya no entrega el banco general de preguntas.
+- Toda corrección ocurre en `/api/submit`, utilizando la combinación guardada para ese participante.
+- El bloqueo de intento único se basa en **el correo escrito**, no en una identidad verificada. Quien conozca el correo de otra persona podría ingresarlo antes. Para reducir suplantación, se necesitaría código al correo (OTP), SSO o invitaciones verificadas.
+- La sesión administrativa utiliza cookie `HttpOnly`, `Secure`, `SameSite=Strict` firmada con HMAC, además de hash de contraseña scrypt y un límite de intentos de inicio de sesión.
+- Las rutas de exportación y consulta de notas verifican autenticación en el servidor. Los participantes no ven enlaces ni archivos administrativos.
+- Mantén el repositorio **privado** y no publiques el código del backend, porque contiene la clave de respuestas.
+- Los datos recopilados incluyen nombre, correo, respuestas, nota, fecha y hora, más comentarios opcionales. Establece política de retención y acceso conforme a tus obligaciones de privacidad.
+- No se incluyen archivos de fuentes tipográficas. El navegador obtiene TASA Orbiter y Plus Jakarta Sans desde Google Fonts; requiere acceso a Internet para visualizar esas tipografías.
+
+## Comportamiento del tiempo y de los intentos
+
+El intento se reserva **al presionar «Comenzar»**. Si una persona recarga durante esos 12 minutos en la misma pestaña, el frontend recupera su orden con un token del `sessionStorage`, sin iniciar otro intento. Si cierra la pestaña y pierde el token, o vuelve después de haber agotado el tiempo, debe solicitar apoyo a los organizadores. La corrección al vencimiento se dispara desde el navegador abierto; si la página se cierra antes de que el tiempo termine, no existe un proceso automático en segundo plano que envíe sus respuestas.
+
+## Pruebas recomendadas antes de compartir el enlace
+
+1. Abrir el sitio en computadora y celular; verificar ambos logos, cielo, tipografía, pie de página y controles táctiles.
+2. Ingresar un correo nuevo e iniciar. Confirmar 12:00 y que las preguntas muestran barra de progreso.
+3. Navegar hacia atrás y verificar que se conservan las respuestas y su orden.
+4. Comparar dos intentos con correos de prueba distintos: deben variar posiciones de preguntas y opciones.
+5. Resolver selección única, múltiple, ordenamiento y relaciones; comprobar la nota y explicaciones.
+6. Enviar opinión y comprobar que aparece en el panel y en Excel/PDF.
+7. Entrar a `/admin.html` con contraseña y exportar reportes. Confirmar que las rutas `/api/admin/results`, `/api/admin/export`, `/api/admin/export-pdf` rechazan solicitudes sin sesión.
+8. Intentar iniciar de nuevo con el mismo correo: debe impedirlo.
+9. Antes de lanzar, revisar las fuentes y accesos de Neon y habilitar copias de seguridad.
+
+## Archivos principales
+
+| Archivo | Función |
+|---|---|
+| `public/index.html`, `public/style.css`, `public/app.js` | Interfaz participante |
+| `public/admin.html`, `public/admin.css`, `public/admin.js` | Interfaz administrativa |
+| `public/assets/` | Fotografía del cielo, logos y viñeta de la referencia original |
+| `lib/questions.js` | Banco y clave de las 10 preguntas |
+| `lib/quiz.js` | Aleatorización, validación y calificación |
+| `api/start.js`, `api/resume.js`, `api/submit.js`, `api/feedback.js` | Funciones del participante |
+| `api/admin/` | Autenticación, listado de notas, exportación Excel y PDF |
+| `schema.sql` | Creación y migración de las tablas |
+| `test/quiz.test.js` | Pruebas unitarias; ejecutar con `npm test` |
+
+## Estado de pruebas de esta entrega
+
+- Ocho pruebas unitarias cubren estructura, aleatorización, puntuación, correspondencia de respuestas, crédito parcial y validación de índices.
+- Se realizó un recorrido visual automatizado con respuestas de prueba en escritorio y celulares de 390 y 320 px, sin errores de JavaScript ni scroll horizontal.
+- **Pendiente:** prueba de extremo a extremo conectada a una base PostgreSQL real y verificación de exportaciones en la cuenta de Vercel. Se recomienda completarla antes de invitar participantes.

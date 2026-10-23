@@ -1,3 +1,4 @@
+-- GENIA 2026 / v3. Ejecutar nuevamente sobre bases ya existentes: conserva registros.
 CREATE TABLE IF NOT EXISTS submissions (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   full_name VARCHAR(140) NOT NULL,
@@ -9,16 +10,24 @@ CREATE TABLE IF NOT EXISTS submissions (
   passed BOOLEAN NOT NULL DEFAULT FALSE,
   submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS question_scores JSONB NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS feedback_rating SMALLINT CHECK (feedback_rating BETWEEN 1 AND 5);
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS feedback_topic VARCHAR(500);
+ALTER TABLE submissions ADD COLUMN IF NOT EXISTS feedback_submitted_at TIMESTAMPTZ;
 CREATE INDEX IF NOT EXISTS submissions_submitted_at_idx ON submissions (submitted_at DESC);
+
 CREATE TABLE IF NOT EXISTS quiz_attempts (
   email_normalized VARCHAR(254) PRIMARY KEY,
   full_name VARCHAR(140) NOT NULL,
   token_hash CHAR(64) NOT NULL,
   started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   expires_at TIMESTAMPTZ NOT NULL,
-  completed_at TIMESTAMPTZ
+  completed_at TIMESTAMPTZ,
+  presentation JSONB NOT NULL DEFAULT '{}'::jsonb
 );
+ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS presentation JSONB NOT NULL DEFAULT '{}'::jsonb;
 CREATE INDEX IF NOT EXISTS quiz_attempts_started_idx ON quiz_attempts (started_at DESC);
+
 CREATE TABLE IF NOT EXISTS admin_login_limits (
   ip_hash TEXT PRIMARY KEY,
   attempts INT NOT NULL DEFAULT 0,

@@ -1,12 +1,13 @@
 {
   "name": "genia-evaluacion-2026",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "start": "vercel dev",
-    "hash-password": "node scripts/hash-password.js"
+    "hash-password": "node scripts/hash-password.js",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20"
