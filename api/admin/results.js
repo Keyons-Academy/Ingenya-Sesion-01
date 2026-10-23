@@ -7,7 +7,7 @@ export default async function handler(req,res){
   const sql=db();
   const [counts]=await sql`SELECT COUNT(*)::integer AS n FROM submissions`;
   const rows=await sql`
-    SELECT s.id,s.full_name,s.email,s.correct_count,s.submitted_at,s.feedback_rating,s.feedback_topic,
+    SELECT s.id,s.full_name,s.email,s.correct_count,s.score,a.presentation->>'scoringVersion' AS scoring_version,s.submitted_at,s.feedback_rating,s.feedback_topic,
            CASE WHEN a.started_at IS NULL THEN NULL
                 ELSE GREATEST(0, ROUND(EXTRACT(EPOCH FROM (s.submitted_at - a.started_at)))::integer)
            END AS duration_seconds

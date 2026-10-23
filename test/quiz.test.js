@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {QUESTIONS} from '../lib/questions.js';
-import {createPresentation,publicPresentation,grade,validateResponses} from '../lib/quiz.js';
+import {createPresentation as newPresentation,publicPresentation,grade,validateResponses} from '../lib/quiz.js';
 import {formatDuration,scoreTen} from '../lib/report.js';
+// Regresión: los intentos existentes mantienen su criterio original.
+const createPresentation=()=>({...newPresentation(),scoringVersion:1});
 
 function answerAll(p){
  return Object.fromEntries(p.ids.map(id=>{

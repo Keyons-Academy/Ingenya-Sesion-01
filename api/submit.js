@@ -27,6 +27,6 @@ export default async function handler(req,res){
    ON CONFLICT (email_normalized) DO NOTHING RETURNING id,submitted_at`;
   if(!rows.length)return json(res,409,{error:'Este participante ya tiene un resultado registrado.'});
   await sql`UPDATE quiz_attempts SET completed_at=NOW() WHERE email_normalized=${email} AND completed_at IS NULL`;
-  return json(res,200,{name:attempt.full_name,score:graded.score,correct:graded.correctCount,total:10,completedAt:dateCR(rows[0].submitted_at),details:graded.details});
+  return json(res,200,{name:attempt.full_name,score:graded.score,correct:graded.correctCount,total:10,scoringVersion:graded.scoringVersion,completedAt:dateCR(rows[0].submitted_at),details:graded.details});
  }catch(e){console.error('submit',e);return json(res,500,{error:'No fue posible guardar las respuestas. Revise su conexión y vuelva a intentarlo.'});}
 }

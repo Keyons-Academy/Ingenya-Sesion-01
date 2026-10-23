@@ -1,5 +1,11 @@
 # Taller Genia 01 — Prompting con propósito
 
+## Criterio vigente: crédito parcial para nuevos intentos
+
+Los intentos creados con `scoringVersion: 2` suman 1 punto por pregunta completamente correcta y 0,5 por crédito parcial. En selección múltiple se requiere al menos la mitad de las opciones correctas sin seleccionar ninguna incorrecta; en ordenamiento y relaciones se requiere al menos la mitad de los pasos o relaciones correctos. Las demás respuestas suman 0. Selección única mantiene 1 o 0. La nota máxima es 10.
+
+Los intentos iniciados antes del cambio y los resultados históricos conservan la calificación binaria anterior, aunque el repaso reconozca aciertos parciales. Los apartados históricos de este documento describen las entregas previas. El panel y las exportaciones respetan el criterio de cada intento. No se requiere migración SQL: la versión del criterio se guarda en la presentación del intento y los puntos siguen almacenándose en escala interna 0–10 por pregunta y 0–100 para el total.
+
 Aplicación lista para desplegar en **Vercel** (archivos estáticos + funciones Node.js), basada en el diseño original de `genia-formulario.zip`, con la identidad de KeyOns e Ingenya.
 
 ## Qué incluye

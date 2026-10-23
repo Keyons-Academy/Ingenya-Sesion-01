@@ -9,7 +9,7 @@ export default async function handler(req,res){
  try{
   const sql=db();
   const rows=await sql`
-    SELECT s.id,s.full_name,s.email,s.correct_count,s.submitted_at,s.question_scores,s.feedback_rating,s.feedback_topic,
+    SELECT s.id,s.full_name,s.email,s.correct_count,s.score,a.presentation->>'scoringVersion' AS scoring_version,s.submitted_at,s.question_scores,s.feedback_rating,s.feedback_topic,
            CASE WHEN a.started_at IS NULL THEN NULL
                 ELSE GREATEST(0, ROUND(EXTRACT(EPOCH FROM (s.submitted_at - a.started_at)))::integer)
            END AS duration_seconds
@@ -32,9 +32,9 @@ export default async function handler(req,res){
    const points=r.question_scores||{};
    const perQuestion=QUESTIONS.map(q=>{
      const value=points[q.id];
-     return value===undefined?'—':Number(value)===10?1:0;
+     return value===undefined?'—':Number(r.scoring_version)===2?Number(value)/10:Number(value)===10?1:0;
    });
-   const out=[r.id,safe(r.full_name),safe(r.email),dateCR(r.submitted_at),formatDuration(r.duration_seconds),scoreTen(r),scoreTen(r),r.feedback_rating??'',safe(r.feedback_topic||'No indicado'),...perQuestion];
+   const out=[r.id,safe(r.full_name),safe(r.email),dateCR(r.submitted_at),formatDuration(r.duration_seconds),r.correct_count,scoreTen(r),r.feedback_rating??'',safe(r.feedback_topic||'No indicado'),...perQuestion];
    const row=sheet.addRow(out);
    if(i%2===0)row.eachCell(c=>{c.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFF1F5FB'}};});
    row.getCell(7).font={bold:true,color:{argb:'FF10122A'}};

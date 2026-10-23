@@ -175,13 +175,18 @@ import {resultScore} from './result-score.js';
     const list=$('rlist');list.replaceChildren();
     const filtered=result.details.map((d,i)=>({...d,num:i+1})).filter(d=>state.filter==='all'||(state.filter==='ok'?d.isPerfect:!d.isPerfect));
     const partial=result.details.filter(d=>status(d)==='partial').length;
-    $('sum').textContent=`${resultScore(result)} de 10 respuestas completamente correctas${partial?`, ${partial} parcialmente acertada${partial===1?'':'s'}`:''}. Cada pregunta suma un punto solo si está completamente correcta; los aciertos parciales sirven para orientar el repaso.`;
+    const perfect=result.details.filter(d=>d.isPerfect).length;
+    const credited=result.details.filter(d=>d.points===5).length;
+    $('sum').textContent=`${perfect} de 10 respuestas completamente correctas${partial?`, ${partial} parcialmente acertada${partial===1?'':'s'}`:''}. `+(result.scoringVersion===2
+      ? `${credited} con crédito de 0,5 puntos. Cada pregunta correcta suma 1 punto. En selección múltiple se requiere al menos la mitad de las opciones correctas y ninguna incorrecta para sumar 0,5; en ordenamiento y relaciones, al menos la mitad de los pasos o relaciones correctos. Las demás suman 0.`
+      : 'Este intento conserva el criterio anterior: un punto por pregunta completamente correcta, sin crédito parcial.');
     document.querySelectorAll('[data-rf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rf===state.filter)));
     if(!filtered.length){put(list,make('li','ri','No hay preguntas en esta categoría.'));return;}
     filtered.forEach(d=>{
       const s=status(d);
       const li=put(list,make('li','ri'));
       li.dataset.s=s;
+      if(result.scoringVersion===2)put(li,make('p','qinstructions',`Puntos: ${d.points/10} de 1`));
       const head=put(li,make('button','ri__h'));head.type='button';head.setAttribute('aria-expanded','false');
       put(head,make('span','ri__n',String(d.num).padStart(2,'0')));
       put(head,make('span','ri__q',d.question));
