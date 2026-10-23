@@ -297,11 +297,6 @@ body[data-step="quiz"] .start,body[data-step="end"] .start,body[data-step="rev"]
 }
 @media(max-width:390px){.wrap{padding:0 16px}.hdr__t{font-size:11px}.cobrand img{max-width:56px}.cobrand{gap:7px}.qnav{padding-left:14px;padding-right:14px}.qnav .btn{font-size:11px;padding:0 12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-.support-material{margin-top:32px;padding-top:24px;border-top:1px solid var(--line);max-width:560px}
-.support-material__title{font-family:var(--display);font-size:18px;font-weight:500}
-.support-material__description{font-size:14px;line-height:1.6;color:var(--t3);margin-top:8px}
-.support-material__link{margin-top:18px;text-decoration:none;max-width:100%;height:auto;min-height:48px;padding-top:12px;padding-bottom:12px}
-.support-material__note{font-size:12px;color:var(--t3);margin-top:10px}
 .score__bar i.partial{background:var(--cielo)}
 #feedbackForm[hidden]{display:none}
 @media(max-width:760px){
