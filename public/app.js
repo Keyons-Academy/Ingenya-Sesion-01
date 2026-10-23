@@ -191,7 +191,7 @@ import {resultScore} from './result-score.js';
       put(head,make('span','ri__n',String(d.num).padStart(2,'0')));
       put(head,make('span','ri__q',d.question));
       const marker=put(head,make('span','ri__s',statusText[s]));
-      marker.setAttribute('aria-label',`${statusText[s]} · ${d.isPerfect?1:0} de 1 punto`);
+      marker.setAttribute('aria-label',`${statusText[s]} · ${result.scoringVersion===2?d.points/10:d.isPerfect?1:0} de 1 punto`);
       put(head,make('span','ri__c'));
       const body=put(li,make('div','ri__b'));
       const msg=put(body,make('div','review-message review-message--'+s));
@@ -200,7 +200,7 @@ import {resultScore} from './result-score.js';
       multiline(body,'Tu respuesta',d.yourAnswer,s==='correct'?'ok':s==='partial'?'partial':s==='unanswered'?'na':'no');
       if(s==='partial'){
         reviewList(body,d.type==='order'?'Pasos que colocaste correctamente':d.type==='match'?'Relaciones que acertaste':'Lo que seleccionaste correctamente',d.reviewCorrect,'correct');
-        reviewList(body,d.type==='order'?'Posiciones que debes revisar':d.type==='match'?'Relaciones que faltaron':'Opciones que faltó seleccionar',d.reviewMissing,'missing');
+        reviewList(body,d.type==='order'?'Posiciones que debes revisar':d.type==='match'?'Relaciones esperadas que debes revisar':'Opciones que faltó seleccionar',d.reviewMissing,'missing');
         reviewList(body,'Opciones marcadas que no correspondían',d.reviewIncorrect,'incorrect');
       }
       if(!d.isPerfect)multiline(body,'Respuesta esperada',d.correctAnswer,'ok');
